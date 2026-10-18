@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane prefHeight="480.0" prefWidth="760.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cedarline.app.controllers.HomeController">
+   <top>
+      <HBox alignment="CENTER_LEFT" BorderPane.alignment="CENTER">
+         <padding>
+            <Insets bottom="16.0" left="24.0" right="24.0" top="16.0" />
+         </padding>
+         <children>
+            <VBox spacing="3.0">
+               <children>
+                  <Label text="Cedarline Supply Co.">
+                     <font>
+                        <Font name="System Bold" size="20.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="welcomeLbl" />
+               </children>
+            </VBox>
+            <Region HBox.hgrow="ALWAYS" />
+            <Button fx:id="logoutBtn" mnemonicParsing="false" onAction="#logout" text="Log out" />
+         </children>
+      </HBox>
+   </top>
+   <center>
+      <VBox alignment="CENTER" spacing="18.0" BorderPane.alignment="CENTER">
+         <padding>
+            <Insets bottom="20.0" left="30.0" right="30.0" top="20.0" />
+         </padding>
+         <children>
+            <Label text="Choose a department to manage">
+               <font>
+                  <Font name="System Bold" size="15.0" />
+               </font>
+            </Label>
+            <GridPane alignment="CENTER" hgap="20.0" vgap="20.0">
+               <children>
+                  <Button fx:id="hrBtn" mnemonicParsing="false" onAction="#openHr" prefHeight="110.0" prefWidth="320.0" alignment="CENTER_LEFT" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                     <graphic>
+                        <VBox spacing="4.0">
+                           <children>
+                              <Label text="HR Department">
+                                 <font>
+                                    <Font name="System Bold" size="17.0" />
+                                 </font>
+                              </Label>
+                              <Label text="Employee records and salaries" />
+                           </children>
+                        </VBox>
+                     </graphic>
+                  </Button>
+                  <Button fx:id="clientsBtn" mnemonicParsing="false" onAction="#openClients" prefHeight="110.0" prefWidth="320.0" alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                     <graphic>
+                        <VBox spacing="4.0">
+                           <children>
+                              <Label text="Clients">
+                                 <font>
+                                    <Font name="System Bold" size="17.0" />
+                                 </font>
+                              </Label>
+                              <Label text="Customer contacts and locations" />
+                           </children>
+                        </VBox>
+                     </graphic>
+                  </Button>
+                  <Button fx:id="inventoryBtn" mnemonicParsing="false" onAction="#openInventory" prefHeight="110.0" prefWidth="320.0" alignment="CENTER_LEFT" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                     <graphic>
+                        <VBox spacing="4.0">
+                           <children>
+                              <Label text="Inventory">
+                                 <font>
+                                    <Font name="System Bold" size="17.0" />
+                                 </font>
+                              </Label>
+                              <Label text="Products, stock levels and prices" />
+                           </children>
+                        </VBox>
+                     </graphic>
+                  </Button>
+                  <Button fx:id="ordersBtn" mnemonicParsing="false" onAction="#openOrders" prefHeight="110.0" prefWidth="320.0" alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                     <graphic>
+                        <VBox spacing="4.0">
+                           <children>
+                              <Label text="Orders">
+                                 <font>
+                                    <Font name="System Bold" size="17.0" />
+                                 </font>
+                              </Label>
+                              <Label text="Customer orders and their status" />
+                           </children>
+                        </VBox>
+                     </graphic>
+                  </Button>
+               </children>
+            </GridPane>
+         </children>
+      </VBox>
+   </center>
+</BorderPane>
