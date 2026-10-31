@@ -14,6 +14,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.Optional;
 
 public class LoginController {
@@ -40,7 +41,13 @@ public class LoginController {
             return;
         }
 
-        Optional<StaffAccount> match = AccountRegistry.authenticate(username, password);
+        Optional<StaffAccount> match;
+        try {
+            match = AccountRegistry.authenticate(username, password);
+        } catch (SQLException ex) {
+            Feedback.error(errorMsg, "Could not reach the database: " + ex.getMessage());
+            return;
+        }
         if (match.isEmpty()) {
             Feedback.error(errorMsg, "Incorrect username or password.");
             passwordFld.clear();

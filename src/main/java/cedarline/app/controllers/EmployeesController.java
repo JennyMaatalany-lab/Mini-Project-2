@@ -12,7 +12,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import java.util.Locale;
+import java.sql.SQLException;
 
 public class EmployeesController {
 
@@ -85,6 +85,11 @@ public class EmployeesController {
         departmentBox.setMaxWidth(Double.MAX_VALUE);
 
         employeesTable.setItems(store.getEmployeesList());
+        try {
+            store.loadEmployees();
+        } catch (SQLException ex) {
+            Feedback.error(messageLbl, "Could not load employees: " + ex.getMessage());
+        }
 
         // picking a row copies its values into the form so it can be edited
         employeesTable.getSelectionModel().selectedItemProperty().addListener((obs, oldRow, row) -> {
@@ -109,13 +114,18 @@ public class EmployeesController {
             return;
         }
 
-        store.addEmployee(firstNameFld.getText().trim(),
-                lastNameFld.getText().trim(),
-                addressFld.getText().trim(),
-                emailFld.getText().trim(),
-                phoneFld.getText().trim(),
-                departmentBox.getValue(),
-                complaintFld.getText().trim());
+        try {
+            store.addEmployee(firstNameFld.getText().trim(),
+                    lastNameFld.getText().trim(),
+                    addressFld.getText().trim(),
+                    emailFld.getText().trim(),
+                    phoneFld.getText().trim(),
+                    departmentBox.getValue(),
+                    complaintFld.getText().trim());
+        } catch (SQLException ex) {
+            Feedback.error(messageLbl, "Could not add the employee: " + ex.getMessage());
+            return;
+        }
         clearFields();
         Feedback.ok(messageLbl, "Employee added.");
     }
@@ -134,13 +144,18 @@ public class EmployeesController {
             return;
         }
 
-        store.updateEmployee(selected, firstNameFld.getText().trim(),
-                lastNameFld.getText().trim(),
-                addressFld.getText().trim(),
-                emailFld.getText().trim(),
-                phoneFld.getText().trim(),
-                departmentBox.getValue(),
-                complaintFld.getText().trim());
+        try {
+            store.updateEmployee(selected, firstNameFld.getText().trim(),
+                    lastNameFld.getText().trim(),
+                    addressFld.getText().trim(),
+                    emailFld.getText().trim(),
+                    phoneFld.getText().trim(),
+                    departmentBox.getValue(),
+                    complaintFld.getText().trim());
+        } catch (SQLException ex) {
+            Feedback.error(messageLbl, "Could not update the employee: " + ex.getMessage());
+            return;
+        }
         Feedback.ok(messageLbl, "Employee updated.");
     }
 
@@ -153,7 +168,12 @@ public class EmployeesController {
         }
 
         if (Feedback.confirm("Remove " + selected.getFirstName() + " " + selected.getLastName() + " from the employee records?")) {
-            store.deleteEmployee(selected);
+            try {
+                store.deleteEmployee(selected);
+            } catch (SQLException ex) {
+                Feedback.error(messageLbl, "Could not remove the employee: " + ex.getMessage());
+                return;
+            }
             clearFields();
             Feedback.ok(messageLbl, "Employee removed.");
         }

@@ -1,6 +1,8 @@
 module cedarline.app {
     requires javafx.controls;
     requires javafx.fxml;
+    // JDBC (java.sql). The MySQL driver jar itself is added by the pom.xml dependency
+    requires java.sql;
 
     // FXMLLoader needs reflective access to the controllers (@FXML fields and handlers)
     opens cedarline.app.controllers to javafx.fxml;
