@@ -12,6 +12,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import java.sql.SQLException;
 import java.util.Locale;
 
 public class OrdersController {
@@ -85,6 +86,11 @@ public class OrdersController {
         statusBox.setMaxWidth(Double.MAX_VALUE);
 
         ordersTable.setItems(store.getOrdersList());
+        try {
+            store.loadOrders();
+        } catch (SQLException ex) {
+            Feedback.error(messageLbl, "Could not load the orders: " + ex.getMessage());
+        }
 
         // picking a row copies its values into the form so it can be edited
         ordersTable.getSelectionModel().selectedItemProperty().addListener((obs, oldRow, row) -> {
@@ -109,13 +115,18 @@ public class OrdersController {
             return;
         }
 
-        store.addOrder(clientNameFld.getText().trim(),
-                productNameFld.getText().trim(),
-                Integer.parseInt(quantityFld.getText().trim()),
-                Double.parseDouble(priceFld.getText().trim()),
-                destinationFld.getText().trim(),
-                orderDateFld.getText().trim(),
-                statusBox.getValue());
+        try {
+            store.addOrder(clientNameFld.getText().trim(),
+                    productNameFld.getText().trim(),
+                    Integer.parseInt(quantityFld.getText().trim()),
+                    Double.parseDouble(priceFld.getText().trim()),
+                    destinationFld.getText().trim(),
+                    orderDateFld.getText().trim(),
+                    statusBox.getValue());
+        } catch (SQLException ex) {
+            Feedback.error(messageLbl, "Could not add the order: " + ex.getMessage());
+            return;
+        }
         clearFields();
         Feedback.ok(messageLbl, "Order added.");
     }
@@ -134,13 +145,18 @@ public class OrdersController {
             return;
         }
 
-        store.updateOrder(selected, clientNameFld.getText().trim(),
-                productNameFld.getText().trim(),
-                Integer.parseInt(quantityFld.getText().trim()),
-                Double.parseDouble(priceFld.getText().trim()),
-                destinationFld.getText().trim(),
-                orderDateFld.getText().trim(),
-                statusBox.getValue());
+        try {
+            store.updateOrder(selected, clientNameFld.getText().trim(),
+                    productNameFld.getText().trim(),
+                    Integer.parseInt(quantityFld.getText().trim()),
+                    Double.parseDouble(priceFld.getText().trim()),
+                    destinationFld.getText().trim(),
+                    orderDateFld.getText().trim(),
+                    statusBox.getValue());
+        } catch (SQLException ex) {
+            Feedback.error(messageLbl, "Could not update the order: " + ex.getMessage());
+            return;
+        }
         Feedback.ok(messageLbl, "Order updated.");
     }
 
@@ -153,7 +169,12 @@ public class OrdersController {
         }
 
         if (Feedback.confirm("Delete order " + selected.getOrderId() + "?")) {
-            store.deleteOrder(selected);
+            try {
+                store.deleteOrder(selected);
+            } catch (SQLException ex) {
+                Feedback.error(messageLbl, "Could not delete the order: " + ex.getMessage());
+                return;
+            }
             clearFields();
             Feedback.ok(messageLbl, "Order removed.");
         }
