@@ -12,6 +12,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import java.sql.SQLException;
 import java.util.Locale;
 
 public class ProductsController {
@@ -82,6 +83,11 @@ public class ProductsController {
 
 
         productsTable.setItems(store.getProductsList());
+        try {
+            store.loadProducts();
+        } catch (SQLException ex) {
+            Feedback.error(messageLbl, "Could not load the products: " + ex.getMessage());
+        }
 
         // picking a row copies its values into the form so it can be edited
         productsTable.getSelectionModel().selectedItemProperty().addListener((obs, oldRow, row) -> {
@@ -106,13 +112,18 @@ public class ProductsController {
             return;
         }
 
-        store.addProduct(nameFld.getText().trim(),
-                categoryFld.getText().trim(),
-                supplierFld.getText().trim(),
-                Integer.parseInt(quantityFld.getText().trim()),
-                Double.parseDouble(unitPriceFld.getText().trim()),
-                Integer.parseInt(reorderLevelFld.getText().trim()),
-                locationFld.getText().trim());
+        try {
+            store.addProduct(nameFld.getText().trim(),
+                    categoryFld.getText().trim(),
+                    supplierFld.getText().trim(),
+                    Integer.parseInt(quantityFld.getText().trim()),
+                    Double.parseDouble(unitPriceFld.getText().trim()),
+                    Integer.parseInt(reorderLevelFld.getText().trim()),
+                    locationFld.getText().trim());
+        } catch (SQLException ex) {
+            Feedback.error(messageLbl, "Could not add the product: " + ex.getMessage());
+            return;
+        }
         clearFields();
         Feedback.ok(messageLbl, "Product added.");
     }
@@ -131,13 +142,18 @@ public class ProductsController {
             return;
         }
 
-        store.updateProduct(selected, nameFld.getText().trim(),
-                categoryFld.getText().trim(),
-                supplierFld.getText().trim(),
-                Integer.parseInt(quantityFld.getText().trim()),
-                Double.parseDouble(unitPriceFld.getText().trim()),
-                Integer.parseInt(reorderLevelFld.getText().trim()),
-                locationFld.getText().trim());
+        try {
+            store.updateProduct(selected, nameFld.getText().trim(),
+                    categoryFld.getText().trim(),
+                    supplierFld.getText().trim(),
+                    Integer.parseInt(quantityFld.getText().trim()),
+                    Double.parseDouble(unitPriceFld.getText().trim()),
+                    Integer.parseInt(reorderLevelFld.getText().trim()),
+                    locationFld.getText().trim());
+        } catch (SQLException ex) {
+            Feedback.error(messageLbl, "Could not update the product: " + ex.getMessage());
+            return;
+        }
         Feedback.ok(messageLbl, "Product updated.");
     }
 
@@ -150,7 +166,12 @@ public class ProductsController {
         }
 
         if (Feedback.confirm("Remove " + selected.getName() + " from the inventory?")) {
-            store.deleteProduct(selected);
+            try {
+                store.deleteProduct(selected);
+            } catch (SQLException ex) {
+                Feedback.error(messageLbl, "Could not delete the product: " + ex.getMessage());
+                return;
+            }
             clearFields();
             Feedback.ok(messageLbl, "Product removed.");
         }
