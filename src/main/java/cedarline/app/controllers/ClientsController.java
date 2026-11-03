@@ -12,7 +12,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import java.util.Locale;
+import java.sql.SQLException;
 
 public class ClientsController {
 
@@ -85,6 +85,11 @@ public class ClientsController {
         clientTypeBox.setMaxWidth(Double.MAX_VALUE);
 
         clientsTable.setItems(store.getClientsList());
+        try {
+            store.loadClients();
+        } catch (SQLException ex) {
+            Feedback.error(messageLbl, "Could not load the clients: " + ex.getMessage());
+        }
 
         // picking a row copies its values into the form so it can be edited
         clientsTable.getSelectionModel().selectedItemProperty().addListener((obs, oldRow, row) -> {
@@ -109,13 +114,18 @@ public class ClientsController {
             return;
         }
 
-        store.addClient(nameFld.getText().trim(),
-                contactPersonFld.getText().trim(),
-                phoneFld.getText().trim(),
-                emailFld.getText().trim(),
-                addressFld.getText().trim(),
-                cityFld.getText().trim(),
-                clientTypeBox.getValue());
+        try {
+            store.addClient(nameFld.getText().trim(),
+                    contactPersonFld.getText().trim(),
+                    phoneFld.getText().trim(),
+                    emailFld.getText().trim(),
+                    addressFld.getText().trim(),
+                    cityFld.getText().trim(),
+                    clientTypeBox.getValue());
+        } catch (SQLException ex) {
+            Feedback.error(messageLbl, "Could not add the client: " + ex.getMessage());
+            return;
+        }
         clearFields();
         Feedback.ok(messageLbl, "Client added.");
     }
@@ -134,13 +144,18 @@ public class ClientsController {
             return;
         }
 
-        store.updateClient(selected, nameFld.getText().trim(),
-                contactPersonFld.getText().trim(),
-                phoneFld.getText().trim(),
-                emailFld.getText().trim(),
-                addressFld.getText().trim(),
-                cityFld.getText().trim(),
-                clientTypeBox.getValue());
+        try {
+            store.updateClient(selected, nameFld.getText().trim(),
+                    contactPersonFld.getText().trim(),
+                    phoneFld.getText().trim(),
+                    emailFld.getText().trim(),
+                    addressFld.getText().trim(),
+                    cityFld.getText().trim(),
+                    clientTypeBox.getValue());
+        } catch (SQLException ex) {
+            Feedback.error(messageLbl, "Could not update the client: " + ex.getMessage());
+            return;
+        }
         Feedback.ok(messageLbl, "Client updated.");
     }
 
@@ -153,7 +168,12 @@ public class ClientsController {
         }
 
         if (Feedback.confirm("Remove " + selected.getName() + " from the client list?")) {
-            store.deleteClient(selected);
+            try {
+                store.deleteClient(selected);
+            } catch (SQLException ex) {
+                Feedback.error(messageLbl, "Could not delete the client: " + ex.getMessage());
+                return;
+            }
             clearFields();
             Feedback.ok(messageLbl, "Client removed.");
         }
