@@ -18,7 +18,7 @@ public final class AccountRegistry {
     private AccountRegistry() {
     }
 
-    /**
+    /*
      * Username is not case sensitive (MySQL default), the password is (its hash must match exactly).
      * Returns the account if the credentials are right, otherwise an empty Optional.
      */
